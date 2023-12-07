@@ -13,15 +13,39 @@ const Drop: React.FC = () => {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
+      // Check the number of dropped files
+      if (acceptedFiles.length !== 1) {
+        alert('Please drop only one CSV file at a time.');
+        console.error('Multiple files dropped. Please drop only one CSV file at a time.');
+        return;
+      }
+
       // Assuming only one file is dropped
       const file = acceptedFiles[0];
+
+      // Check file type
+      if (!file || file.type !== 'text/csv') {
+        alert('Wrong file type!')
+        console.error('Invalid file type. Please upload a CSV file.');
+        return;
+      }
 
       Papa.parse(file, {
         header: false,
         skipEmptyLines: true,
         complete: (result) => {
+          // Check CSV header format
+          const headers: any = result.data[0];
+          const expectedHeaders = ['Name', 'Address', 'City', 'State', 'zipCode', 'Country'];
+
+          if (!headers || headers.length !== expectedHeaders.length || !expectedHeaders.every((header, index) => headers[index] === header)) {
+            alert('Wrong CSV file Format!')
+            console.error('Invalid CSV format. Please ensure the CSV follows the required format.');
+            return;
+          }
+
           // 'result.data' contains parsed CSV data
-          const parsedAddresses: string[] = result.data.map((row: any) => {
+          const parsedAddresses: string[] = result.data.slice(1).map((row: any, index: number) => {
             return row.join('')
           });
           dispatch(setParsedAddresses(parsedAddresses))

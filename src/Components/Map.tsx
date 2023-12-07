@@ -57,14 +57,15 @@ const Map: React.FC = () => {
                 zoom: 16,
             });
         } catch (error) {
+            alert('The searched location does not exist or it cannot be found.')
             console.error('Error: ', error);
         }
     };
 
     useEffect(() => {
         if (addresses.length > 0) {
+            setPinLocations([])
             addresses.forEach((address: string) => {
-                setPinLocations([])
                 generatePinsOnMapHandler(address)
             })
         }
