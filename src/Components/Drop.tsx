@@ -8,8 +8,9 @@ import { setParsedAddresses } from '../Reducers/DropSlice';
 
 
 const Drop: React.FC = () => {
-  const addresses = useSelector((state: RootState) => state.Drop.parsedAddresses);
   const dispatch = useDispatch<AppDispatch>();
+  const expectedHeaders = ['Name', 'Address', 'City', 'State', 'zipCode', 'Country'];
+  const addresses = useSelector((state: RootState) => state.Drop.parsedAddresses);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -74,7 +75,10 @@ const Drop: React.FC = () => {
         {isDragActive ? (
           <p>Drop the CSV file here...</p>
         ) : (
-          <p>Drag 'n' drop a CSV file here, or click to select one</p>
+          <>
+            <p>{`Drag 'n' drop a CSV file here, or click to select one. `}</p>
+            <strong>{`Expected CSV file headers "${expectedHeaders}"`}</strong>
+          </>
         )}
       </div>
       {addresses.length > 0 &&
